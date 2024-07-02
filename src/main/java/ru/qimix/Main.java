@@ -7,17 +7,39 @@ public class Main {
 
 
     public static void main(String[] args) throws InterruptedException {
-        for(int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             System.out.println(generateRoute("RLRFR", 100));
         }
+
+        for (Map.Entry<Integer, Integer> pair : sizeToFreq.entrySet()) {
+            System.out.println(pair.getKey() + " - " + pair.getValue());
+        }
+
     }
 
-    public static String generateRoute (String letters,int length) throws InterruptedException {
+    public static String generateRoute(String letters, int length) throws InterruptedException {
         Random random = new Random();
         StringBuilder route = new StringBuilder();
+
         Runnable task = () -> {
+            int count = 0;
+            int freq = 0;
+
             for (int i = 0; i < length; i++) {
-                route.append(letters.charAt(random.nextInt(letters.length())));
+                char a = letters.charAt(random.nextInt(letters.length()));
+                if (String.valueOf(a).toString().equals("R")) {
+                    count++;
+                    if (freq == 0) {
+                        freq++;
+                    }
+                } else {
+                    if (count > 0) {
+                        sizeToFreq.put(freq, count);
+                    }
+                    count = 0;
+                    freq = 0;
+                }
+                route.append(a);
             }
         };
         Thread thread = new Thread(task);
