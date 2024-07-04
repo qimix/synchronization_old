@@ -5,16 +5,14 @@ import java.util.*;
 public class Main {
     public static final Map<Integer, Integer> sizeToFreq = new HashMap<>();
 
-
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 1000; i++) {
-            System.out.println(generateRoute("RLRFR", 100));
+            generateRoute("RLRFR", 100);
         }
 
         for (Map.Entry<Integer, Integer> pair : sizeToFreq.entrySet()) {
             System.out.println(pair.getKey() + " - " + pair.getValue());
         }
-
     }
 
     public static String generateRoute(String letters, int length) throws InterruptedException {
@@ -32,16 +30,17 @@ public class Main {
                     if (freq == 0) {
                         freq++;
                     }
-                } else {
-                    if (count > 0) {
-                        sizeToFreq.put(freq, count);
+                } else if(count != 0) {
+                        synchronized (sizeToFreq) {
+                            sizeToFreq.put(freq, count);
+                        }
+                        count = 0;
+                        freq = 0;
                     }
-                    count = 0;
-                    freq = 0;
-                }
                 route.append(a);
-            }
-        };
+                }
+            };
+
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
