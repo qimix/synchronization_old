@@ -3,7 +3,7 @@ package ru.qimix;
 import java.util.*;
 
 public class Main {
-    public static final Map<Integer, Integer> sizeToFreq = new HashMap<>();
+    public static final Map<Integer, Integer> sizeToFreq = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 1000; i++) {
@@ -14,7 +14,9 @@ public class Main {
             System.out.println(pair.getKey() + " - " + pair.getValue());
         }
     }
+
     static int freq = 0;
+
     public static String generateRoute(String letters, int length) throws InterruptedException {
         Random random = new Random();
         StringBuilder route = new StringBuilder();
@@ -36,14 +38,12 @@ public class Main {
                 route.append(a);
             }
             freq++;
-            synchronized (sizeToFreq) {
-                sizeToFreq.put(freq, count);
-            }
+            sizeToFreq.put(freq, count);
         };
 
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
         return route.toString();
-   }
+    }
 }
