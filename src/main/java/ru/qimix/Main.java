@@ -36,7 +36,9 @@ public class Main {
                 route.append(a);
             }
             freq++;
-            sizeToFreq.put(freq, count);
+            synchronized (sizeToFreq) {
+                sizeToFreq.put(freq, count);
+            }
         };
 
         Thread thread = new Thread(task);
