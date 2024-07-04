@@ -14,37 +14,34 @@ public class Main {
             System.out.println(pair.getKey() + " - " + pair.getValue());
         }
     }
-
+    static int freq = 0;
     public static String generateRoute(String letters, int length) throws InterruptedException {
         Random random = new Random();
         StringBuilder route = new StringBuilder();
 
         Runnable task = () -> {
             int count = 0;
-            int freq = 0;
+            int tmp = 0;
 
             for (int i = 0; i < length; i++) {
                 char a = letters.charAt(random.nextInt(letters.length()));
                 if (String.valueOf(a).toString().equals("R")) {
-                    count++;
-                    if (freq == 0) {
-                        freq++;
+                    tmp++;
+                } else {
+                    if (count < tmp) {
+                        count = tmp;
                     }
-                } else if(count != 0) {
-                        synchronized (sizeToFreq) {
-                            sizeToFreq.put(freq, count);
-                        }
-                        count = 0;
-                        freq = 0;
-                    }
-                route.append(a);
+                    tmp = 0;
                 }
-            };
+                route.append(a);
+            }
+            freq++;
+            sizeToFreq.put(freq, count);
+        };
 
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
         return route.toString();
-    }
-
+   }
 }
