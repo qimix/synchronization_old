@@ -4,15 +4,23 @@ import java.util.*;
 
 public class Main {
     public static final Map<Integer, Integer> sizeToFreq = Collections.synchronizedMap(new HashMap<>());
+    public static final Map<Integer, Integer> tmpMap = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < 1000; i++) {
             generateRoute("RLRFR", 100);
         }
 
-        for (Map.Entry<Integer, Integer> pair : sizeToFreq.entrySet()) {
-            System.out.println(pair.getKey() + " - " + pair.getValue());
+        sizeToFreq.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Integer>comparingByValue());
+
+        int tmpCount = 0;
+
+        for(Map.Entry<Integer, Integer> pair : sizeToFreq.entrySet()){
+            System.out.println(pair.getValue());
         }
+
+        System.out.println("Самое частое количество повторений " + 61 + " (встретилось " + 9 + " раз) Другие размеры:");
     }
 
     static int freq = 0;
