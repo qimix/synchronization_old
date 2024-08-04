@@ -3,25 +3,22 @@ package ru.qimix;
 import java.util.*;
 
 public class Main {
-    public static final Map<Integer, Integer> sizeToFreq = new HashMap<>();
-    static int treadCount = 0;
+    public static Map<Integer, Integer> sizeToFreq = Collections.synchronizedMap(new HashMap<>());
+    public static List<String> routeStore = Collections.synchronizedList(new ArrayList<>());
 
     public static void main(String[] args) throws InterruptedException {
         for(int i = 0; i < 1000; i++) {
-            new Robot("RLRFR", 100, treadCount).start();
-            treadCount++;
+             new Robot("RLRFR", 100).start();
         }
     }
 
     static class Robot extends Thread {
         String letters;
         Integer length;
-        Integer treadCount;
 
-        public Robot(String letters, int length, int treadCount){
+        public Robot(String letters, int length){
             this.letters = letters;
             this.length = length;
-            this.treadCount = treadCount;
         }
 
         public void run(){
@@ -29,14 +26,14 @@ public class Main {
         }
 
         public String generateRoute(String letters, int length) {
-            System.out.println("----- Hello from tread " + treadCount + " ------" );
             Random random = new Random();
             StringBuilder route = new StringBuilder();
             for (int i = 0; i < length; i++) {
                 route.append(letters.charAt(random.nextInt(letters.length())));
             }
-            System.out.println(route.toString());
-            System.out.println("Thread " + treadCount +" finish");
+            synchronized (routeStore) {
+                routeStore.add(route.toString());
+            }
             return route.toString();
         }
 
